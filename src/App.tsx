@@ -1,68 +1,65 @@
 import { useState, useEffect } from "react";
 
-const NETWORKS = [
-  {
-    id: "mtn", name: "MTN", dot: "#f5b800",
-    bundles: [
-      { id: 1,  size: "1GB",   validity: "Non-Expiry", price: 5.00,   wholesale: 4.50,   popular: false },
-      { id: 2,  size: "2GB",   validity: "Non-Expiry", price: 9.50,   wholesale: 8.60,   popular: false },
-      { id: 3,  size: "3GB",   validity: "Non-Expiry", price: 14.50,  wholesale: 13.20,  popular: false },
-      { id: 4,  size: "4GB",   validity: "Non-Expiry", price: 20.00,  wholesale: 18.00,  popular: false },
-      { id: 5,  size: "5GB",   validity: "Non-Expiry", price: 24.50,  wholesale: 22.10,  popular: true  },
-      { id: 6,  size: "6GB",   validity: "Non-Expiry", price: 29.00,  wholesale: 26.40,  popular: false },
-      { id: 7,  size: "8GB",   validity: "Non-Expiry", price: 39.00,  wholesale: 35.50,  popular: false },
-      { id: 8,  size: "10GB",  validity: "Non-Expiry", price: 47.00,  wholesale: 42.60,  popular: false },
-      { id: 9,  size: "15GB",  validity: "Non-Expiry", price: 69.00,  wholesale: 63.00,  popular: false },
-      { id: 10, size: "20GB",  validity: "Non-Expiry", price: 89.00,  wholesale: 81.20,  popular: false },
-      { id: 11, size: "25GB",  validity: "Non-Expiry", price: 111.00, wholesale: 100.78, popular: false },
-      { id: 12, size: "30GB",  validity: "Non-Expiry", price: 136.00, wholesale: 124.00, popular: false },
-      { id: 13, size: "40GB",  validity: "Non-Expiry", price: 175.00, wholesale: 159.00, popular: false },
-      { id: 14, size: "100GB", validity: "Non-Expiry", price: 415.00, wholesale: 377.30, popular: false },
-    ],
-  },
-  {
-    id: "telecel", name: "Telecel", dot: "#ff1a27",
-    bundles: [
-      { id: 1, size: "5GB",  validity: "Non-Expiry", price: 25.00,  wholesale: 23.00,  popular: false },
-      { id: 2, size: "10GB", validity: "Non-Expiry", price: 46.00,  wholesale: 42.00,  popular: true  },
-      { id: 3, size: "15GB", validity: "Non-Expiry", price: 64.00,  wholesale: 58.50,  popular: false },
-      { id: 4, size: "20GB", validity: "Non-Expiry", price: 85.00,  wholesale: 76.93,  popular: false },
-      { id: 5, size: "25GB", validity: "Non-Expiry", price: 105.00, wholesale: 95.00,  popular: false },
-      { id: 6, size: "30GB", validity: "Non-Expiry", price: 123.00, wholesale: 112.00, popular: false },
-      { id: 7, size: "40GB", validity: "Non-Expiry", price: 163.00, wholesale: 147.98, popular: false },
-      { id: 8, size: "50GB", validity: "Non-Expiry", price: 197.00, wholesale: 179.00, popular: false },
-    ],
-  },
-  {
-    id: "airteltigo", name: "AirtelTigo", dot: "#ff4d38",
-    bundles: [
-      { id: 1, size: "1GB",  validity: "Non-Expiry", price: 4.90,  wholesale: 4.40,  popular: false },
-      { id: 2, size: "2GB",  validity: "Non-Expiry", price: 9.40,  wholesale: 8.56,  popular: false },
-      { id: 3, size: "3GB",  validity: "Non-Expiry", price: 13.20, wholesale: 12.00, popular: false },
-      { id: 4, size: "4GB",  validity: "Non-Expiry", price: 18.00, wholesale: 16.50, popular: false },
-      { id: 5, size: "5GB",  validity: "Non-Expiry", price: 22.50, wholesale: 20.50, popular: true  },
-      { id: 6, size: "6GB",  validity: "Non-Expiry", price: 28.50, wholesale: 25.87, popular: false },
-      { id: 7, size: "8GB",  validity: "Non-Expiry", price: 37.00, wholesale: 33.59, popular: false },
-      { id: 8, size: "10GB", validity: "Non-Expiry", price: 47.00, wholesale: 42.56, popular: false },
-      { id: 9, size: "15GB", validity: "Non-Expiry", price: 74.00, wholesale: 67.20, popular: false },
-    ],
-  },
+interface Bundle { id:number; size:string; validity:string; price:number; wholesale:number; popular:boolean; }
+interface Network { id:string; name:string; dot:string; bundles:Bundle[]; }
+interface CartItem extends Bundle { networkName:string; }
+interface WForm { name:string; phone:string; email:string; network:string; }
+interface AFAForm { name:string; ghCard:string; occupation:string; email:string; residence:string; dob:string; phone:string; }
+
+const NETWORKS:Network[] = [
+  { id:"mtn", name:"MTN", dot:"#f5b800", bundles:[
+    {id:1,size:"1GB",validity:"Non-Expiry",price:5.00,wholesale:4.50,popular:false},
+    {id:2,size:"2GB",validity:"Non-Expiry",price:9.50,wholesale:8.60,popular:false},
+    {id:3,size:"3GB",validity:"Non-Expiry",price:14.50,wholesale:13.20,popular:false},
+    {id:4,size:"4GB",validity:"Non-Expiry",price:20.00,wholesale:18.00,popular:false},
+    {id:5,size:"5GB",validity:"Non-Expiry",price:24.50,wholesale:22.10,popular:true},
+    {id:6,size:"6GB",validity:"Non-Expiry",price:29.00,wholesale:26.40,popular:false},
+    {id:7,size:"8GB",validity:"Non-Expiry",price:39.00,wholesale:35.50,popular:false},
+    {id:8,size:"10GB",validity:"Non-Expiry",price:47.00,wholesale:42.60,popular:false},
+    {id:9,size:"15GB",validity:"Non-Expiry",price:69.00,wholesale:63.00,popular:false},
+    {id:10,size:"20GB",validity:"Non-Expiry",price:89.00,wholesale:81.20,popular:false},
+    {id:11,size:"25GB",validity:"Non-Expiry",price:111.00,wholesale:100.78,popular:false},
+    {id:12,size:"30GB",validity:"Non-Expiry",price:136.00,wholesale:124.00,popular:false},
+    {id:13,size:"40GB",validity:"Non-Expiry",price:175.00,wholesale:159.00,popular:false},
+    {id:14,size:"100GB",validity:"Non-Expiry",price:415.00,wholesale:377.30,popular:false},
+  ]},
+  { id:"telecel", name:"Telecel", dot:"#ff1a27", bundles:[
+    {id:1,size:"5GB",validity:"Non-Expiry",price:25.00,wholesale:23.00,popular:false},
+    {id:2,size:"10GB",validity:"Non-Expiry",price:46.00,wholesale:42.00,popular:true},
+    {id:3,size:"15GB",validity:"Non-Expiry",price:64.00,wholesale:58.50,popular:false},
+    {id:4,size:"20GB",validity:"Non-Expiry",price:85.00,wholesale:76.93,popular:false},
+    {id:5,size:"25GB",validity:"Non-Expiry",price:105.00,wholesale:95.00,popular:false},
+    {id:6,size:"30GB",validity:"Non-Expiry",price:123.00,wholesale:112.00,popular:false},
+    {id:7,size:"40GB",validity:"Non-Expiry",price:163.00,wholesale:147.98,popular:false},
+    {id:8,size:"50GB",validity:"Non-Expiry",price:197.00,wholesale:179.00,popular:false},
+  ]},
+  { id:"airteltigo", name:"AirtelTigo", dot:"#ff4d38", bundles:[
+    {id:1,size:"1GB",validity:"Non-Expiry",price:4.90,wholesale:4.40,popular:false},
+    {id:2,size:"2GB",validity:"Non-Expiry",price:9.40,wholesale:8.56,popular:false},
+    {id:3,size:"3GB",validity:"Non-Expiry",price:13.20,wholesale:12.00,popular:false},
+    {id:4,size:"4GB",validity:"Non-Expiry",price:18.00,wholesale:16.50,popular:false},
+    {id:5,size:"5GB",validity:"Non-Expiry",price:22.50,wholesale:20.50,popular:true},
+    {id:6,size:"6GB",validity:"Non-Expiry",price:28.50,wholesale:25.87,popular:false},
+    {id:7,size:"8GB",validity:"Non-Expiry",price:37.00,wholesale:33.59,popular:false},
+    {id:8,size:"10GB",validity:"Non-Expiry",price:47.00,wholesale:42.56,popular:false},
+    {id:9,size:"15GB",validity:"Non-Expiry",price:74.00,wholesale:67.20,popular:false},
+  ]},
 ];
 
 const STEPS = [
-  { icon: "📡", step: "01", title: "Pick Network",   desc: "Choose MTN, Telecel, or AirtelTigo." },
-  { icon: "📦", step: "02", title: "Select Bundle",  desc: "Pick your data size — all bundles are non-expiry." },
-  { icon: "💳", step: "03", title: "Pay Instantly",  desc: "MoMo or card via Paystack — fast and secure." },
-  { icon: "⚡", step: "04", title: "Receive Bundle", desc: "Delivered to recipient number automatically." },
+  {icon:"📡",step:"01",title:"Pick Network",desc:"Choose MTN, Telecel, or AirtelTigo."},
+  {icon:"📦",step:"02",title:"Select Bundle",desc:"Pick your data size — all bundles are non-expiry."},
+  {icon:"💳",step:"03",title:"Pay Instantly",desc:"MoMo or card via Paystack — fast and secure."},
+  {icon:"⚡",step:"04",title:"Receive Bundle",desc:"Delivered to recipient number automatically."},
 ];
 
 const FAQS = [
-  { q: "How fast do I receive my bundle?",         a: "Delivery is automatic and instant — usually within 30 seconds of payment confirmation." },
-  { q: "What does Non-Expiry mean?",               a: "Non-expiry bundles never expire. They stay on your account until you finish using them." },
-  { q: "What payment methods are accepted?",       a: "We accept Mobile Money (MTN MoMo, Telecel Cash, AirtelTigo Money) and debit/credit cards via Paystack." },
-  { q: "Can recipient and payment number differ?", a: "Yes! You enter a recipient number (receives bundle) and a separate payment number (MoMo number to pay with)." },
-  { q: "How does the wholesale program work?",     a: "Pay a one-time GH₵50 registration fee to become a verified reseller and unlock discounted prices on all bundles." },
-  { q: "What if my bundle does not arrive?",       a: "Contact us immediately on WhatsApp or call our support line. We resolve all delivery issues within 15 minutes." },
+  {q:"How fast do I receive my bundle?",a:"Delivery is automatic and instant — usually within 30 seconds of payment confirmation."},
+  {q:"What does Non-Expiry mean?",a:"Non-expiry bundles never expire. They stay on your account until you finish using them."},
+  {q:"What payment methods are accepted?",a:"We accept Mobile Money (MTN MoMo, Telecel Cash, AirtelTigo Money) and debit/credit cards via Paystack."},
+  {q:"Can recipient and payment number differ?",a:"Yes! You enter a recipient number (receives bundle) and a separate MoMo payment number."},
+  {q:"How does the wholesale program work?",a:"Pay a one-time GH₵50 registration fee to become a verified reseller and unlock discounted prices."},
+  {q:"What if my bundle does not arrive?",a:"Contact us immediately on WhatsApp or call our support line. We resolve all issues within 15 minutes."},
 ];
 
 const CSS = `
@@ -93,8 +90,7 @@ const CSS = `
   .bdot{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:blink 2s infinite}
   @keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
   .h1{font-size:clamp(56px,12vw,104px);font-weight:900;line-height:.88;letter-spacing:-1px;text-transform:uppercase;margin-bottom:26px}
-  .h1 .w1{color:#fff;display:block}
-  .h1 .w2{color:var(--orange);display:block}
+  .h1 .w1{color:#fff;display:block}.h1 .w2{color:var(--orange);display:block}
   .h1 .w3{color:rgba(255,255,255,.18);display:block;-webkit-text-stroke:2px rgba(255,255,255,.25)}
   .h1 .w4{color:#fff;display:block}
   .hsub{color:rgba(255,255,255,.6);font-size:17px;font-weight:500;max-width:420px;line-height:1.65;margin-bottom:38px;font-family:'Barlow',sans-serif}
@@ -106,9 +102,7 @@ const CSS = `
   .hstats{display:flex;gap:36px;margin-top:56px;padding-top:36px;border-top:1px solid rgba(255,255,255,.1);flex-wrap:wrap}
   .snum{font-size:28px;font-weight:900;color:var(--orange);line-height:1}
   .slbl{font-size:12px;color:rgba(255,255,255,.5);font-weight:700;letter-spacing:.5px;margin-top:4px;font-family:'Barlow',sans-serif;text-transform:uppercase}
-  .sec{padding:80px 5%}
-  .sec-dark{background:var(--blue-d)}
-  .sec-gray{background:var(--gray)}
+  .sec{padding:80px 5%}.sec-dark{background:var(--blue-d)}.sec-gray{background:var(--gray)}
   .shd{font-size:clamp(30px,6vw,52px);font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1}
   .shd.light{color:#fff}.shd.dark{color:var(--blue-d)}
   .ssub{font-size:16px;margin-top:10px;font-family:'Barlow',sans-serif;font-weight:500}
@@ -155,7 +149,7 @@ const CSS = `
   .afa-price{font-size:58px;font-weight:900;color:#fff;line-height:1;margin-bottom:6px}
   .afa-price-sub{font-size:14px;color:rgba(255,255,255,.5);font-family:'Barlow',sans-serif;margin-bottom:28px;line-height:1.6}
   .afa-btn{width:100%;padding:16px;background:var(--orange);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;text-transform:uppercase;transition:all .2s}
-  .afa-btn:hover{background:var(--orange-l);transform:translateY(-2px)}
+  .afa-btn:hover{background:var(--orange-l)}
   .afa-note{margin-top:14px;font-size:12px;color:rgba(255,255,255,.35);font-family:'Barlow',sans-serif}
   .wbanner{background:linear-gradient(135deg,#FF6B1A 0%,#d94f00 100%);border-radius:24px;padding:56px 5%;margin:0 5% 80px;display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap;position:relative;overflow:hidden}
   .wbanner::before{content:'';position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.08)}
@@ -226,23 +220,23 @@ const CSS = `
 `;
 
 export default function App() {
-  const [activeNet, setActiveNet]           = useState("mtn");
-  const [isWholesale, setIsWholesale]       = useState(false);
-  const [modal, setModal]                   = useState(null);
-  const [cart, setCart]                     = useState(null);
-  const [step, setStep]                     = useState(1);
-  const [menuOpen, setMenuOpen]             = useState(false);
-  const [openFaq, setOpenFaq]               = useState(null);
-  const [scrolled, setScrolled]             = useState(false);
-  const [recipientPhone, setRecipientPhone] = useState("");
-  const [paymentPhone, setPaymentPhone]     = useState("");
-  const [payMethod, setPayMethod]           = useState("momo");
-  const [wForm, setWForm]                   = useState({ name: "", phone: "", email: "", network: "mtn" });
-  const [wSuccess, setWSuccess]             = useState(false);
-  const [afaForm, setAfaForm]               = useState({ name: "", ghCard: "", occupation: "", email: "", residence: "", dob: "", phone: "" });
-  const [afaSuccess, setAfaSuccess]         = useState(false);
+  const [activeNet, setActiveNet]           = useState<string>("mtn");
+  const [isWholesale, setIsWholesale]       = useState<boolean>(false);
+  const [modal, setModal]                   = useState<string|null>(null);
+  const [cart, setCart]                     = useState<CartItem|null>(null);
+  const [step, setStep]                     = useState<number>(1);
+  const [menuOpen, setMenuOpen]             = useState<boolean>(false);
+  const [openFaq, setOpenFaq]               = useState<number|null>(null);
+  const [scrolled, setScrolled]             = useState<boolean>(false);
+  const [recipientPhone, setRecipientPhone] = useState<string>("");
+  const [paymentPhone, setPaymentPhone]     = useState<string>("");
+  const [payMethod, setPayMethod]           = useState<string>("momo");
+  const [wForm, setWForm]                   = useState<WForm>({name:"",phone:"",email:"",network:"mtn"});
+  const [wSuccess, setWSuccess]             = useState<boolean>(false);
+  const [afaForm, setAfaForm]               = useState<AFAForm>({name:"",ghCard:"",occupation:"",email:"",residence:"",dob:"",phone:""});
+  const [afaSuccess, setAfaSuccess]         = useState<boolean>(false);
 
-  const network = NETWORKS.find(n => n.id === activeNet);
+  const network = NETWORKS.find(n => n.id === activeNet) as Network;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -250,97 +244,70 @@ export default function App() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const go = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    setMenuOpen(false);
-  };
+  const go = (id:string) => { document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); setMenuOpen(false); };
 
-  const openBuy = (bundle) => {
-    setCart({ ...bundle, networkName: network.name });
-    setRecipientPhone("");
-    setPaymentPhone("");
-    setPayMethod("momo");
-    setStep(1);
-    setModal("buy");
+  const openBuy = (bundle:Bundle) => {
+    setCart({...bundle, networkName:network.name});
+    setRecipientPhone(""); setPaymentPhone(""); setPayMethod("momo"); setStep(1); setModal("buy");
   };
 
   const handlePay = () => {
-    if (!recipientPhone || recipientPhone.replace(/\s/g, "").length < 9) return;
-    if (!paymentPhone || paymentPhone.replace(/\s/g, "").length < 9) return;
-    setStep(2);
-    setTimeout(() => setModal("buySuccess"), 2200);
+    if(!recipientPhone||recipientPhone.replace(/\s/g,"").length<9) return;
+    if(!paymentPhone||paymentPhone.replace(/\s/g,"").length<9) return;
+    setStep(2); setTimeout(()=>setModal("buySuccess"),2200);
   };
 
-  const handleWholesale = () => {
-    if (!wForm.name || wForm.phone.replace(/\s/g, "").length < 9) return;
-    setWSuccess(true);
-  };
-
-  const handleAFA = () => {
-    if (!afaForm.name || !afaForm.ghCard || afaForm.phone.replace(/\s/g, "").length < 9) return;
-    setAfaSuccess(true);
-  };
-
-  const price = (b) => isWholesale ? b.wholesale : b.price;
-
-  const closeModal = () => {
-    setModal(null);
-    setCart(null);
-    setStep(1);
-    setWSuccess(false);
-    setAfaSuccess(false);
-  };
+  const handleWholesale = () => { if(!wForm.name||wForm.phone.replace(/\s/g,"").length<9) return; setWSuccess(true); };
+  const handleAFA = () => { if(!afaForm.name||!afaForm.ghCard||afaForm.phone.replace(/\s/g,"").length<9) return; setAfaSuccess(true); };
+  const price = (b:Bundle) => isWholesale ? b.wholesale : b.price;
+  const closeModal = () => { setModal(null); setCart(null); setStep(1); setWSuccess(false); setAfaSuccess(false); };
 
   return (
-    <div style={{ fontFamily: "'Barlow Condensed','Arial Narrow',sans-serif", background: "#fff", overflowX: "hidden" }}>
+    <div style={{fontFamily:"'Barlow Condensed','Arial Narrow',sans-serif",background:"#fff",overflowX:"hidden"}}>
       <style>{CSS}</style>
 
-      <nav className={`nav ${scrolled ? "solid" : ""}`}>
+      <nav className={`nav ${scrolled?"solid":""}`}>
         <div className="nav-inner">
-          <div className="logo" onClick={() => go("hero")}>
+          <div className="logo" onClick={()=>go("hero")}>
             <div className="logo-box">U</div>
             <div className="logo-txt"><b>UNI</b><span>MARKET</span></div>
           </div>
           <div className="nav-links">
-            <a onClick={() => go("bundles")}>Bundles</a>
-            <a onClick={() => go("how")}>How It Works</a>
-            <a onClick={() => go("afa")}>AFA Bundle</a>
-            <a onClick={() => go("wholesale")}>Resellers</a>
-            <a onClick={() => go("faq")}>FAQ</a>
+            <a onClick={()=>go("bundles")}>Bundles</a>
+            <a onClick={()=>go("how")}>How It Works</a>
+            <a onClick={()=>go("afa")}>AFA Bundle</a>
+            <a onClick={()=>go("wholesale")}>Resellers</a>
+            <a onClick={()=>go("faq")}>FAQ</a>
           </div>
-          <button className="nav-btn" onClick={() => go("bundles")}>Buy Data →</button>
-          <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
-            <span /><span /><span />
-          </button>
+          <button className="nav-btn" onClick={()=>go("bundles")}>Buy Data →</button>
+          <button className="hamburger" onClick={()=>setMenuOpen(!menuOpen)}><span/><span/><span/></button>
         </div>
       </nav>
 
-      {menuOpen && (
+      {menuOpen&&(
         <div className="mob-menu">
-          <a onClick={() => go("bundles")}>Bundles</a>
-          <a onClick={() => go("how")}>How It Works</a>
-          <a onClick={() => go("afa")}>AFA Bundle</a>
-          <a onClick={() => go("wholesale")}>Become a Reseller</a>
-          <a onClick={() => go("faq")}>FAQ</a>
-          <button className="mob-btn" onClick={() => go("bundles")}>Buy Bundle →</button>
+          <a onClick={()=>go("bundles")}>Bundles</a>
+          <a onClick={()=>go("how")}>How It Works</a>
+          <a onClick={()=>go("afa")}>AFA Bundle</a>
+          <a onClick={()=>go("wholesale")}>Become a Reseller</a>
+          <a onClick={()=>go("faq")}>FAQ</a>
+          <button className="mob-btn" onClick={()=>go("bundles")}>Buy Bundle →</button>
         </div>
       )}
 
       <section id="hero" className="hero">
-        <div className="orb" style={{ width: 600, height: 600, background: "#FF6B1A", opacity: 0.18, top: -150, right: -120 }} />
-        <div className="orb" style={{ width: 400, height: 400, background: "#1A2FBF", opacity: 0.3, bottom: -80, left: "35%" }} />
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <div className="badge"><span className="bdot" />NOW OPEN — NON-EXPIRY BUNDLES</div>
+        <div className="orb" style={{width:600,height:600,background:"#FF6B1A",opacity:.18,top:-150,right:-120}}/>
+        <div className="orb" style={{width:400,height:400,background:"#1A2FBF",opacity:.3,bottom:-80,left:"35%"}}/>
+        <div style={{position:"relative",zIndex:1}}>
+          <div className="badge"><span className="bdot"/>NOW OPEN — NON-EXPIRY BUNDLES</div>
           <h1 className="h1">
-            <span className="w1">ONE</span>
-            <span className="w2">MARKET.</span>
-            <span className="w3">EVERYTHING</span>
-            <span className="w4">YOU NEED.</span>
+            <span className="w1">ONE</span><span className="w2">MARKET.</span>
+            <span className="w3">EVERYTHING</span><span className="w4">YOU NEED.</span>
           </h1>
           <p className="hsub">Non-expiry data bundles for MTN, Telecel and AirtelTigo. Pay with MoMo or card. Delivered instantly.</p>
           <div className="hbtns">
-            <button className="btn-s" onClick={() => go("bundles")}>Start Shopping →</button>
-            <button className="btn-g" onClick={() => go("wholesale")}>Become a Reseller</button>
+            <button className="btn-s" onClick={()=>go("bundles")}>Start Shopping →</button>
+            <button className="btn-g" onClick={()=>go("wholesale")}>Become a Reseller</button>
           </div>
           <div className="hstats">
             <div><div className="snum">3</div><div className="slbl">Networks</div></div>
@@ -355,42 +322,42 @@ export default function App() {
         <div className="shd light">DATA <span className="orange">BUNDLES</span></div>
         <div className="ssub light">All bundles are Non-Expiry — they never expire!</div>
         <div className="net-tabs">
-          {NETWORKS.map(n => (
-            <button key={n.id} className={`ntab ${activeNet === n.id ? "on" : ""}`} onClick={() => setActiveNet(n.id)}>
-              <span className="ndot" style={{ background: n.dot }} />{n.name}
+          {NETWORKS.map(n=>(
+            <button key={n.id} className={`ntab ${activeNet===n.id?"on":""}`} onClick={()=>setActiveNet(n.id)}>
+              <span className="ndot" style={{background:n.dot}}/>{n.name}
             </button>
           ))}
         </div>
         <div className="tier-wrap">
-          <button className={`tbtn ${!isWholesale ? "on" : ""}`} onClick={() => setIsWholesale(false)}>Retail</button>
-          <button className={`tbtn ${isWholesale ? "on" : ""}`} onClick={() => setIsWholesale(true)}>Wholesale 💼</button>
+          <button className={`tbtn ${!isWholesale?"on":""}`} onClick={()=>setIsWholesale(false)}>Retail</button>
+          <button className={`tbtn ${isWholesale?"on":""}`} onClick={()=>setIsWholesale(true)}>Wholesale 💼</button>
         </div>
-        {isWholesale && (
+        {isWholesale&&(
           <div className="walert">
-            <span style={{ fontSize: 20 }}>💼</span>
-            <div className="walert-txt">Wholesale prices shown. <strong style={{ color: "#fff" }}>Register as a reseller (GH₵50 one-time)</strong> to access these rates.</div>
-            <button className="walert-btn" onClick={() => setModal("wholesale")}>Register Now →</button>
+            <span style={{fontSize:20}}>💼</span>
+            <div className="walert-txt">Wholesale prices shown. <strong style={{color:"#fff"}}>Register as a reseller (GH₵50 one-time)</strong> to access these rates.</div>
+            <button className="walert-btn" onClick={()=>setModal("wholesale")}>Register Now →</button>
           </div>
         )}
         <div className="bgrid">
-          {network.bundles.map(b => (
-            <div key={b.id} className={`bcard ${b.popular ? "bcard-pop" : ""}`}>
+          {network.bundles.map((b:Bundle)=>(
+            <div key={b.id} className={`bcard ${b.popular?"bcard-pop":""}`}>
               <div className="bsize">{b.size}</div>
               <div className="bvalid">♾️ {b.validity}</div>
               <div className="bprice">GH₵{price(b)}</div>
-              {isWholesale && <div className="bsave">💰 Save GH₵{(b.price - b.wholesale).toFixed(2)}</div>}
-              <button className="bbtn" onClick={() => openBuy(b)}>Buy Now →</button>
+              {isWholesale&&<div className="bsave">💰 Save GH₵{(b.price-b.wholesale).toFixed(2)}</div>}
+              <button className="bbtn" onClick={()=>openBuy(b)}>Buy Now →</button>
             </div>
           ))}
         </div>
       </section>
 
-      <section id="how" className="sec sec-dark" style={{ paddingTop: 0 }}>
-        <div style={{ borderTop: "1px solid rgba(255,255,255,.07)", paddingTop: 72 }}>
+      <section id="how" className="sec sec-dark" style={{paddingTop:0}}>
+        <div style={{borderTop:"1px solid rgba(255,255,255,.07)",paddingTop:72}}>
           <div className="shd light">HOW IT <span className="orange">WORKS</span></div>
           <div className="ssub light">Four simple steps — buy your bundle in under a minute</div>
           <div className="sgrid">
-            {STEPS.map((s, i) => (
+            {STEPS.map((s,i)=>(
               <div key={i} className="scard">
                 <div className="siw">{s.icon}</div>
                 <div className="snum2">Step {s.step}</div>
@@ -408,22 +375,20 @@ export default function App() {
           <div className="afa-grid">
             <div>
               <div className="shd light">AGENT FOR <span className="orange">AGENTS</span></div>
-              <p style={{ color: "rgba(255,255,255,.7)", fontSize: 16, fontFamily: "'Barlow',sans-serif", marginTop: 14, lineHeight: 1.6, maxWidth: 400 }}>
+              <p style={{color:"rgba(255,255,255,.7)",fontSize:16,fontFamily:"'Barlow',sans-serif",marginTop:14,lineHeight:1.6,maxWidth:400}}>
                 Register as an AFA Agent and unlock exclusive benefits. One-time registration that opens doors to better rates and agent-level access.
               </p>
               <div className="afa-perks">
-                {[["🎯","Agent-level access to bundles"],["💰","Exclusive AFA pricing"],["📲","Priority SMS support"],["🏆","Verified agent status"]].map(([ic, lbl]) => (
-                  <div key={lbl} className="afa-perk">
-                    <div className="afa-perk-icon">{ic}</div>{lbl}
-                  </div>
+                {[["🎯","Agent-level access"],["💰","Exclusive AFA pricing"],["📲","Priority SMS support"],["🏆","Verified agent status"]].map(([ic,lbl])=>(
+                  <div key={lbl} className="afa-perk"><div className="afa-perk-icon">{ic}</div>{lbl}</div>
                 ))}
               </div>
             </div>
             <div className="afa-price-box">
               <div className="afa-price-lbl">ONE-TIME REGISTRATION</div>
               <div className="afa-price">GH₵18.50</div>
-              <div className="afa-price-sub">Processing fee: GH₵0.36<br /><strong style={{ color: "#fff" }}>Total: GH₵18.86</strong></div>
-              <button className="afa-btn" onClick={() => setModal("afa")}>Register as AFA Agent →</button>
+              <div className="afa-price-sub">Processing fee: GH₵0.36<br/><strong style={{color:"#fff"}}>Total: GH₵18.86</strong></div>
+              <button className="afa-btn" onClick={()=>setModal("afa")}>Register as AFA Agent →</button>
               <div className="afa-note">Requires Ghana Card • One-time only</div>
             </div>
           </div>
@@ -432,31 +397,31 @@ export default function App() {
 
       <div id="wholesale">
         <div className="wbanner">
-          <div className="wleft" style={{ position: "relative", zIndex: 1 }}>
-            <h2>BECOME A<br />RESELLER TODAY</h2>
+          <div className="wleft" style={{position:"relative",zIndex:1}}>
+            <h2>BECOME A<br/>RESELLER TODAY</h2>
             <p>Pay once, earn forever. Get discounted bundle prices across all networks and build your own data business.</p>
             <div className="wperks">
-              {[["✅","Cheaper Prices"],["📲","SMS Alerts"],["🤝","Support"],["💰","High Margins"]].map(([ic, lbl]) => (
+              {[["✅","Cheaper Prices"],["📲","SMS Alerts"],["🤝","Support"],["💰","High Margins"]].map(([ic,lbl])=>(
                 <div key={lbl} className="perk"><div className="pbox">{ic}</div>{lbl}</div>
               ))}
             </div>
           </div>
-          <button className="wreg-btn" onClick={() => setModal("wholesale")}>Register — GH₵50 →</button>
+          <button className="wreg-btn" onClick={()=>setModal("wholesale")}>Register — GH₵50 →</button>
         </div>
       </div>
 
       <section id="faq" className="sec sec-gray">
-        <div style={{ textAlign: "center" }}>
+        <div style={{textAlign:"center"}}>
           <div className="shd dark">FREQUENTLY ASKED <span className="orange">QUESTIONS</span></div>
         </div>
         <div className="flist">
-          {FAQS.map((f, i) => (
-            <div key={i} className={`fitem ${openFaq === i ? "open" : ""}`}>
-              <div className="fq" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+          {FAQS.map((f,i)=>(
+            <div key={i} className={`fitem ${openFaq===i?"open":""}`}>
+              <div className="fq" onClick={()=>setOpenFaq(openFaq===i?null:i)}>
                 <span className="fqtxt">{f.q}</span>
                 <span className="ficon">+</span>
               </div>
-              {openFaq === i && <div className="fa-ans">{f.a}</div>}
+              {openFaq===i&&<div className="fa-ans">{f.a}</div>}
             </div>
           ))}
         </div>
@@ -471,34 +436,34 @@ export default function App() {
             </div>
             <div className="ftagline">One Market. Everything You Need.</div>
             <a className="fwa" href="https://chat.whatsapp.com/Ih8ivypyeZ2FZa8hGjWAJs" target="_blank" rel="noreferrer">💬 Join WhatsApp Group</a>
-            <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
-              <a href="tel:+233594520170" style={{ color: "rgba(255,255,255,.6)", fontSize: 14, fontFamily: "'Barlow',sans-serif", textDecoration: "none" }}>📞 +233 59 452 0170</a>
-              <a href="tel:+233554874227" style={{ color: "rgba(255,255,255,.6)", fontSize: 14, fontFamily: "'Barlow',sans-serif", textDecoration: "none" }}>📞 +233 55 487 4227</a>
-              <a href="mailto:unimarketelga@gmail.com" style={{ color: "rgba(255,255,255,.6)", fontSize: 14, fontFamily: "'Barlow',sans-serif", textDecoration: "none" }}>✉️ unimarketelga@gmail.com</a>
+            <div style={{marginTop:14,display:"flex",flexDirection:"column",gap:8}}>
+              <a href="tel:+233594520170" style={{color:"rgba(255,255,255,.6)",fontSize:14,fontFamily:"'Barlow',sans-serif",textDecoration:"none"}}>📞 +233 59 452 0170</a>
+              <a href="tel:+233554874227" style={{color:"rgba(255,255,255,.6)",fontSize:14,fontFamily:"'Barlow',sans-serif",textDecoration:"none"}}>📞 +233 55 487 4227</a>
+              <a href="mailto:unimarketelga@gmail.com" style={{color:"rgba(255,255,255,.6)",fontSize:14,fontFamily:"'Barlow',sans-serif",textDecoration:"none"}}>✉️ unimarketelga@gmail.com</a>
             </div>
           </div>
           <div>
             <div className="fctit">Shop</div>
             <ul className="flinks">
-              {["MTN Bundles","Telecel Bundles","AirtelTigo Bundles","Wholesale"].map(l => (
-                <li key={l} onClick={() => go("bundles")}>{l}</li>
+              {["MTN Bundles","Telecel Bundles","AirtelTigo Bundles","Wholesale"].map(l=>(
+                <li key={l} onClick={()=>go("bundles")}>{l}</li>
               ))}
             </ul>
           </div>
           <div>
             <div className="fctit">Programs</div>
             <ul className="flinks">
-              <li onClick={() => go("afa")}>AFA Bundle</li>
-              <li onClick={() => setModal("wholesale")}>Become a Reseller</li>
-              <li onClick={() => go("how")}>How It Works</li>
+              <li onClick={()=>go("afa")}>AFA Bundle</li>
+              <li onClick={()=>setModal("wholesale")}>Become a Reseller</li>
+              <li onClick={()=>go("how")}>How It Works</li>
             </ul>
           </div>
           <div>
             <div className="fctit">Support</div>
             <ul className="flinks">
-              <li><a href="https://chat.whatsapp.com/Ih8ivypyeZ2FZa8hGjWAJs" target="_blank" rel="noreferrer" style={{ color: "inherit", textDecoration: "none" }}>WhatsApp Group</a></li>
-              <li><a href="tel:+233594520170" style={{ color: "inherit", textDecoration: "none" }}>+233 59 452 0170</a></li>
-              <li><a href="mailto:unimarketelga@gmail.com" style={{ color: "inherit", textDecoration: "none" }}>Send Email</a></li>
+              <li><a href="https://chat.whatsapp.com/Ih8ivypyeZ2FZa8hGjWAJs" target="_blank" rel="noreferrer" style={{color:"inherit",textDecoration:"none"}}>WhatsApp Group</a></li>
+              <li><a href="tel:+233594520170" style={{color:"inherit",textDecoration:"none"}}>+233 59 452 0170</a></li>
+              <li><a href="mailto:unimarketelga@gmail.com" style={{color:"inherit",textDecoration:"none"}}>Send Email</a></li>
             </ul>
           </div>
         </div>
@@ -510,11 +475,11 @@ export default function App() {
 
       <a href="https://chat.whatsapp.com/Ih8ivypyeZ2FZa8hGjWAJs" target="_blank" rel="noreferrer" className="wafab">💬</a>
 
-      {modal === "buy" && cart && (
-        <div className="overlay" onClick={e => e.target === e.currentTarget && closeModal()}>
+      {modal==="buy"&&cart&&(
+        <div className="overlay" onClick={(e)=>e.target===e.currentTarget&&closeModal()}>
           <div className="modal">
             <button className="modal-x" onClick={closeModal}>✕</button>
-            {step === 1 ? (
+            {step===1?(
               <>
                 <div className="mtit">Buy Bundle</div>
                 <div className="msub">{cart.size} — {cart.networkName} — {cart.validity}</div>
@@ -524,60 +489,54 @@ export default function App() {
                   <div className="orow"><span className="olbl">Validity</span><span className="oval">{cart.validity}</span></div>
                   <div className="orow"><span className="olbl">Total</span><span className="ototl">GH₵{price(cart)}</span></div>
                 </div>
-                <div className="tip-box">
-                  💡 The <strong>recipient number</strong> receives the bundle. The <strong>payment number</strong> is your MoMo number. These can be different.
-                </div>
+                <div className="tip-box">💡 The <strong>recipient number</strong> receives the bundle. The <strong>payment number</strong> is your MoMo. These can be different.</div>
                 <div className="igrp">
                   <label className="ilbl">📲 Recipient Number (Receives Bundle)</label>
-                  <input className="ifield" placeholder="Number that will receive the bundle" value={recipientPhone} onChange={e => setRecipientPhone(e.target.value)} />
+                  <input className="ifield" placeholder="Number that will receive the bundle" value={recipientPhone} onChange={e=>setRecipientPhone(e.target.value)}/>
                 </div>
                 <div className="igrp">
-                  <label className="ilbl">💳 Payment Number (Paying With)</label>
-                  <input className="ifield" placeholder="MoMo number you are paying with" value={paymentPhone} onChange={e => setPaymentPhone(e.target.value)} />
+                  <label className="ilbl">💳 Payment Number (MoMo)</label>
+                  <input className="ifield" placeholder="MoMo number you are paying with" value={paymentPhone} onChange={e=>setPaymentPhone(e.target.value)}/>
                 </div>
                 <div className="igrp">
                   <label className="ilbl">Payment Method</label>
                   <div className="payopts">
-                    <div className={`popt ${payMethod === "momo" ? "on" : ""}`} onClick={() => setPayMethod("momo")}>📱 Mobile Money</div>
-                    <div className={`popt ${payMethod === "card" ? "on" : ""}`} onClick={() => setPayMethod("card")}>💳 Card (Paystack)</div>
+                    <div className={`popt ${payMethod==="momo"?"on":""}`} onClick={()=>setPayMethod("momo")}>📱 Mobile Money</div>
+                    <div className={`popt ${payMethod==="card"?"on":""}`} onClick={()=>setPayMethod("card")}>💳 Card (Paystack)</div>
                   </div>
                 </div>
-                <button className="btnpay" onClick={handlePay} disabled={!recipientPhone || recipientPhone.replace(/\s/g,"").length < 9 || !paymentPhone || paymentPhone.replace(/\s/g,"").length < 9}>
+                <button className="btnpay" onClick={handlePay} disabled={!recipientPhone||recipientPhone.replace(/\s/g,"").length<9||!paymentPhone||paymentPhone.replace(/\s/g,"").length<9}>
                   Pay GH₵{price(cart)} via Paystack →
                 </button>
               </>
-            ) : (
+            ):(
               <>
                 <div className="mtit">Processing...</div>
                 <div className="msub">Verifying your payment and sending bundle.</div>
-                <div className="pbar"><div className="pfill" /></div>
-                <div style={{ textAlign: "center", color: "#aaa", fontSize: 14, fontFamily: "'Barlow',sans-serif" }}>Please do not close this window ⏳</div>
+                <div className="pbar"><div className="pfill"/></div>
+                <div style={{textAlign:"center",color:"#aaa",fontSize:14}}>Please do not close this window ⏳</div>
               </>
             )}
           </div>
         </div>
       )}
 
-      {modal === "buySuccess" && (
-        <div className="overlay" onClick={e => e.target === e.currentTarget && closeModal()}>
-          <div className="modal" style={{ textAlign: "center" }}>
+      {modal==="buySuccess"&&(
+        <div className="overlay" onClick={(e)=>e.target===e.currentTarget&&closeModal()}>
+          <div className="modal" style={{textAlign:"center"}}>
             <div className="sico">🎉</div>
             <div className="stit2">Bundle Sent!</div>
-            <div className="sdesc2">
-              Bundle delivered to <strong>{recipientPhone}</strong>.<br />
-              Payment charged to <strong>{paymentPhone}</strong>.<br />
-              SMS confirmation coming shortly.
-            </div>
+            <div className="sdesc2">Bundle delivered to <strong>{recipientPhone}</strong>.<br/>Payment charged to <strong>{paymentPhone}</strong>.<br/>SMS confirmation coming shortly.</div>
             <button className="btnpay" onClick={closeModal}>Done ✓</button>
           </div>
         </div>
       )}
 
-      {modal === "afa" && (
-        <div className="overlay" onClick={e => e.target === e.currentTarget && closeModal()}>
+      {modal==="afa"&&(
+        <div className="overlay" onClick={(e)=>e.target===e.currentTarget&&closeModal()}>
           <div className="modal">
             <button className="modal-x" onClick={closeModal}>✕</button>
-            {!afaSuccess ? (
+            {!afaSuccess?(
               <>
                 <div className="mtit">AFA Registration</div>
                 <div className="msub">Agent For Agents — one-time fee of GH₵18.86.</div>
@@ -587,43 +546,20 @@ export default function App() {
                   <div className="orow"><span className="olbl">Processing</span><span className="oval">GH₵0.36</span></div>
                   <div className="orow"><span className="olbl">Total</span><span className="ototl">GH₵18.86</span></div>
                 </div>
-                <div className="igrp">
-                  <label className="ilbl">Full Name</label>
-                  <input className="ifield" placeholder="e.g. Kofi Mensah" value={afaForm.name} onChange={e => setAfaForm({ ...afaForm, name: e.target.value })} />
-                </div>
-                <div className="igrp">
-                  <label className="ilbl">Ghana Card Number</label>
-                  <input className="ifield" placeholder="GHA-XXXXXXXXX-X" value={afaForm.ghCard} onChange={e => setAfaForm({ ...afaForm, ghCard: e.target.value })} />
-                </div>
-                <div className="igrp">
-                  <label className="ilbl">Phone Number</label>
-                  <input className="ifield" placeholder="e.g. 024 000 0000" value={afaForm.phone} onChange={e => setAfaForm({ ...afaForm, phone: e.target.value })} />
-                </div>
-                <div className="igrp">
-                  <label className="ilbl">Occupation</label>
-                  <input className="ifield" placeholder="e.g. Trader" value={afaForm.occupation} onChange={e => setAfaForm({ ...afaForm, occupation: e.target.value })} />
-                </div>
-                <div className="igrp">
-                  <label className="ilbl">Email Address</label>
-                  <input className="ifield" type="email" placeholder="your@email.com" value={afaForm.email} onChange={e => setAfaForm({ ...afaForm, email: e.target.value })} />
-                </div>
-                <div className="igrp">
-                  <label className="ilbl">Place of Residence</label>
-                  <input className="ifield" placeholder="e.g. Accra, East Legon" value={afaForm.residence} onChange={e => setAfaForm({ ...afaForm, residence: e.target.value })} />
-                </div>
-                <div className="igrp">
-                  <label className="ilbl">Date of Birth</label>
-                  <input className="ifield" type="date" value={afaForm.dob} onChange={e => setAfaForm({ ...afaForm, dob: e.target.value })} />
-                </div>
-                <button className="btnpay" onClick={handleAFA} disabled={!afaForm.name || !afaForm.ghCard || afaForm.phone.replace(/\s/g,"").length < 9}>
-                  Pay GH₵18.86 & Register →
-                </button>
+                <div className="igrp"><label className="ilbl">Full Name</label><input className="ifield" placeholder="e.g. Kofi Mensah" value={afaForm.name} onChange={e=>setAfaForm({...afaForm,name:e.target.value})}/></div>
+                <div className="igrp"><label className="ilbl">Ghana Card Number</label><input className="ifield" placeholder="GHA-XXXXXXXXX-X" value={afaForm.ghCard} onChange={e=>setAfaForm({...afaForm,ghCard:e.target.value})}/></div>
+                <div className="igrp"><label className="ilbl">Phone Number</label><input className="ifield" placeholder="e.g. 024 000 0000" value={afaForm.phone} onChange={e=>setAfaForm({...afaForm,phone:e.target.value})}/></div>
+                <div className="igrp"><label className="ilbl">Occupation</label><input className="ifield" placeholder="e.g. Trader" value={afaForm.occupation} onChange={e=>setAfaForm({...afaForm,occupation:e.target.value})}/></div>
+                <div className="igrp"><label className="ilbl">Email Address</label><input className="ifield" type="email" placeholder="your@email.com" value={afaForm.email} onChange={e=>setAfaForm({...afaForm,email:e.target.value})}/></div>
+                <div className="igrp"><label className="ilbl">Place of Residence</label><input className="ifield" placeholder="e.g. Accra, East Legon" value={afaForm.residence} onChange={e=>setAfaForm({...afaForm,residence:e.target.value})}/></div>
+                <div className="igrp"><label className="ilbl">Date of Birth</label><input className="ifield" type="date" value={afaForm.dob} onChange={e=>setAfaForm({...afaForm,dob:e.target.value})}/></div>
+                <button className="btnpay" onClick={handleAFA} disabled={!afaForm.name||!afaForm.ghCard||afaForm.phone.replace(/\s/g,"").length<9}>Pay GH₵18.86 & Register →</button>
               </>
-            ) : (
+            ):(
               <>
                 <div className="sico">⭐</div>
                 <div className="stit2">Registration Submitted!</div>
-                <div className="sdesc2">Welcome, <strong>{afaForm.name}</strong>! Your AFA Bundle registration has been received. SMS confirmation to <strong>{afaForm.phone}</strong>.</div>
+                <div className="sdesc2">Welcome, <strong>{afaForm.name}</strong>! AFA registration received. SMS confirmation to <strong>{afaForm.phone}</strong>.</div>
                 <button className="btnpay" onClick={closeModal}>Done ✓</button>
               </>
             )}
@@ -631,46 +567,33 @@ export default function App() {
         </div>
       )}
 
-      {modal === "wholesale" && (
-        <div className="overlay" onClick={e => e.target === e.currentTarget && closeModal()}>
+      {modal==="wholesale"&&(
+        <div className="overlay" onClick={(e)=>e.target===e.currentTarget&&closeModal()}>
           <div className="modal">
             <button className="modal-x" onClick={closeModal}>✕</button>
-            {!wSuccess ? (
+            {!wSuccess?(
               <>
                 <div className="mtit">Reseller Registration</div>
                 <div className="msub">One-time GH₵50 fee — unlock wholesale pricing forever.</div>
-                <div style={{ background: "#fff8f4", border: "1px solid #ffd5be", borderRadius: 12, padding: "14px 18px", marginBottom: 22, display: "flex", gap: 12 }}>
-                  <span style={{ fontSize: 22 }}>💡</span>
-                  <div style={{ fontSize: 13, color: "#666", fontFamily: "'Barlow',sans-serif", lineHeight: 1.6 }}>
-                    After registration, your account will be reviewed within <strong>24 hours</strong>. You will get an SMS once verified.
-                  </div>
+                <div style={{background:"#fff8f4",border:"1px solid #ffd5be",borderRadius:12,padding:"14px 18px",marginBottom:22,display:"flex",gap:12}}>
+                  <span style={{fontSize:22}}>💡</span>
+                  <div style={{fontSize:13,color:"#666",fontFamily:"'Barlow',sans-serif",lineHeight:1.6}}>After registration, your account will be reviewed within <strong>24 hours</strong>. You will get an SMS once verified.</div>
                 </div>
-                <div className="igrp">
-                  <label className="ilbl">Full Name</label>
-                  <input className="ifield" placeholder="Your full name" value={wForm.name} onChange={e => setWForm({ ...wForm, name: e.target.value })} />
-                </div>
-                <div className="igrp">
-                  <label className="ilbl">Phone Number</label>
-                  <input className="ifield" placeholder="e.g. 024 000 0000" value={wForm.phone} onChange={e => setWForm({ ...wForm, phone: e.target.value })} />
-                </div>
-                <div className="igrp">
-                  <label className="ilbl">Email (optional)</label>
-                  <input className="ifield" type="email" placeholder="your@email.com" value={wForm.email} onChange={e => setWForm({ ...wForm, email: e.target.value })} />
-                </div>
+                <div className="igrp"><label className="ilbl">Full Name</label><input className="ifield" placeholder="Your full name" value={wForm.name} onChange={e=>setWForm({...wForm,name:e.target.value})}/></div>
+                <div className="igrp"><label className="ilbl">Phone Number</label><input className="ifield" placeholder="e.g. 024 000 0000" value={wForm.phone} onChange={e=>setWForm({...wForm,phone:e.target.value})}/></div>
+                <div className="igrp"><label className="ilbl">Email (optional)</label><input className="ifield" type="email" placeholder="your@email.com" value={wForm.email} onChange={e=>setWForm({...wForm,email:e.target.value})}/></div>
                 <div className="igrp">
                   <label className="ilbl">Primary Network</label>
-                  <select className="ifield" value={wForm.network} onChange={e => setWForm({ ...wForm, network: e.target.value })}>
+                  <select className="ifield" value={wForm.network} onChange={e=>setWForm({...wForm,network:e.target.value})}>
                     <option value="mtn">MTN</option>
                     <option value="telecel">Telecel</option>
                     <option value="airteltigo">AirtelTigo</option>
                     <option value="all">All Networks</option>
                   </select>
                 </div>
-                <button className="btnpay" onClick={handleWholesale} disabled={!wForm.name || wForm.phone.replace(/\s/g,"").length < 9}>
-                  Pay GH₵50 & Register →
-                </button>
+                <button className="btnpay" onClick={handleWholesale} disabled={!wForm.name||wForm.phone.replace(/\s/g,"").length<9}>Pay GH₵50 & Register →</button>
               </>
-            ) : (
+            ):(
               <>
                 <div className="sico">🙌</div>
                 <div className="stit2">Application Submitted!</div>
